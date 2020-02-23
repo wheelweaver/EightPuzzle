@@ -194,32 +194,43 @@ def check_solvable(g):
         print("The puzzle is insolvable, still creating nodes")
 
 
-# Final Running of the Code
+def BFS():  
 
-# uncomment the line below to run it for a fixed data input and comment the line below it
-# k = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
-#k = get_initial()
-######MY INPUT #########
-#my_list = [1, 2, 3, 4, 5, 6, 7, 0, 8]
-my_list = [1, 8, 2, 0, 4, 3, 7, 6, 5]
+    my_list = [1, 8, 2, 0, 4, 3, 7, 6, 5]
 
-n = 3
-final = [my_list[i * n:(i + 1) * n] for i in range((len(my_list) + n - 1) // n )]
-k = np.array(final)
-#k = [1, 2, 5, 3, 4, 0, 7, 8, 6]
+    n = 3
+    final = [my_list[i * n:(i + 1) * n] for i in range((len(my_list) + n - 1) // n )]
+    k = np.array(final)
+    #k = [1, 2, 5, 3, 4, 0, 7, 8, 6]
 
 
-#check_correct_input(k)
-check_solvable(k)
+    #check_correct_input(k)
+    check_solvable(k)
 
-root = Node(0, k, None, None, 0)
+    root = Node(0, k, None, None, 0)
 
-# BFS implementation call
-goal, s, v = exploring_nodes(root)
+    # BFS implementation call
+    goal, s, v = exploring_nodes(root)
 
-if goal is None and s is None and v is None:
-    print("Goal State could not be reached, Sorry")
-else:
-    # Print and write the final output
-    print_states(path(goal))
+    if goal is None and s is None and v is None:
+        print("Goal State could not be reached, Sorry")
+    else:
+        # Print and write the final output
+        print_states(path(goal))
+def main():
+    menu()
+    
+def menu():
 
+    print("""
+                ************MAIN MENU**************
+                      
+                      """)
+    choice = input("""
+                      A: Breadth First Search
+                      B: A* Search
+                      
+                      Please enter your choice: """)
+    if choice == "A" or choice == "a":
+        BFS()
+main()
