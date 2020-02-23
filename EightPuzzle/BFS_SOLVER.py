@@ -34,8 +34,6 @@ def move_left(data):
         temp_arr[i, j - 1] = 0
         print("move_left")
         return temp_arr
-
-
 def move_right(data):
     i, j = find_index(data)
     if j == 2:
@@ -47,8 +45,6 @@ def move_right(data):
         temp_arr[i, j + 1] = 0
         print("move_right")
         return temp_arr
-
-
 def move_up(data):
     i, j = find_index(data)
     if i == 0:
@@ -59,10 +55,7 @@ def move_up(data):
         temp_arr[i, j] = temp
         temp_arr[i - 1, j] = 0
         print("move_up")
-
         return temp_arr
-
-
 def move_down(data):
     i, j = find_index(data)
     if i == 2:
@@ -77,8 +70,6 @@ def move_down(data):
         print(temp_arr)
         print("DP DONE")
         return temp_arr
-
-
 def move_tile(action, data):
     if action == 'up':
         return move_up(data)
