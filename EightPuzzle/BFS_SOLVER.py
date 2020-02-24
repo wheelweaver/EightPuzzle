@@ -3,20 +3,25 @@
  solves it and creates 3 txt files with solutions"""
 
 import numpy as np  # Used to store the digits in an array
+
 import os  # Used to delete the file created by previous running of the program
 
 goal_node = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
 
 
 class Node:
-    def __init__(self, node_no, data, parent, act, cost):
+    def __init__(self, node_no, data, parent, act, cost,level,fval):
         self.data = data
         self.parent = parent
         self.act = act
         self.node_no = node_no
         self.cost = cost
+        self.level = level
+        self.fval = fval
 
 def find_index(puzzle):
+    print("MY BENEFIT")
+    print(puzzle)
     result= np.where(puzzle == 0)
     #i = int(i)
     #j = int(j)
@@ -126,7 +131,7 @@ def copy(root):
         return temp          
 '''
 
-def exploring_nodes(node):
+def bfsNode(node):
     print("Exploring Nodes")
     actions = ["down", "up", "left", "right"]
     node_q = [node]
@@ -157,8 +162,11 @@ def exploring_nodes(node):
             #print("\n")
             if temp_data is not None:
                 node_counter += 1
-                child_node = Node(node_counter, np.array(temp_data), current_root, i, 0)  # Create a child node
-
+                child_node = Node(node_counter, np.array(temp_data), current_root, i, 0, current_root.level + 1, 0)  # Create a child node
+                #print("LEVEL")
+                #print(current_root.level)
+                #print("CHILD NODE CREATED")
+                #print(child_node.data)
                 if child_node.data.tolist() not in final_nodes:  # Add the child node data in final node list
                     node_q.append(child_node)
                     final_nodes.append(child_node.data.tolist())
@@ -186,28 +194,116 @@ def check_solvable(g):
 
 
 def BFS():  
-
+    '''
     my_list = [1, 8, 2, 0, 4, 3, 7, 6, 5]
-
+    #my_list = [0,4,7,5,1,8,6,2,3]
     n = 3
     final = [my_list[i * n:(i + 1) * n] for i in range((len(my_list) + n - 1) // n )]
     k = np.array(final)
     #k = [1, 2, 5, 3, 4, 0, 7, 8, 6]
-
+    
 
     #check_correct_input(k)
     check_solvable(k)
-
-    root = Node(0, k, None, None, 0)
+    '''
+    k = tempInput()
+    root = Node(0, k, None, None, 0, 0, 0)
 
     # BFS implementation call
-    goal, s, v = exploring_nodes(root)
+    goal, s, v = bfsNode(root)
 
     if goal is None and s is None and v is None:
         print("Goal State could not be reached, Sorry")
     else:
         # Print and write the final output
         print_states(path(goal))
+
+def tempInput():
+   # my_list = [1, 8, 2, 0, 4, 3, 7, 6, 5]
+    my_list = [1, 2, 3, 4, 5, 6, 8, 0, 7]
+
+    n = 3
+    final = [my_list[i * n:(i + 1) * n] for i in range((len(my_list) + n - 1) // n )]
+    k = np.array(final)
+    #k = final
+    check_solvable(k)
+    return k
+
+    
+    
+def f(start,goal):
+    """ Heuristic Function to calculate hueristic value f(x) = h(x) + g(x) """
+    return h(start.data,goal)+start.level
+
+def h(start, goal):
+    """ Calculates the different between the given puzzles """
+    '''
+    temp = 0
+    startZero = np.argwhere(start == 0) # gives index of 0 in start 
+    goalZero = np.argwhere(goal == 0) # gives index of 0 in goal
+
+    if startZero == goalZero:
+        temp = np.count_nonzero(start != goal)
+        temp = temp - 1
+        print("WITH ZERO")
+    else:
+        temp = np.count_nonzero(start != goal and start)
+        print("WITHOUT ZERO")
+    '''
+    temp = np.count_nonzero(start != goal)
+    
+    return temp
+'''
+    for i in range(0,3):
+        for j in range(0,3):
+            if start[i][j] != goal[i][j] and start[i][j] != 0:
+                temp += 1
+                print("DISPLACED TILES")
+                print(temp)
+                return temp
+'''
+
+def generate(self):
+    print(self.data)
+    x, y = find_index(current_root.data)
+    val_list = [[x,y-1],[x,y+1],[x-1,y],[x+1,y]]   # 2 3 1 3
+    children = []
+    for i in val_list:
+        child = shuffle(current_root.data,x,y,i[0],i[1])
+        if child is not None:
+            child_node = Node(0,child,0,0,0,current_root.level+1,0)
+        return children
+
+def aStar():
+    open = []
+    closed = []
+    k = tempInput()
+    root = Node(0,k, None, None, 0, 0, 0)
+    root.fval = f(root,goal_node) # get final value heruistic
+    print("F-VALUE")
+    print(root.fval)
+    open.append(root)    
+    while True:
+        current = open[0]
+        for i in current.data:
+            for j in i:
+                print(j, end=" ")
+                print("")
+        # If the diff btwn current node and final node is 0, we're done
+        if (h(current.data,goal_node) == 0):
+            break
+        for i in current.generate():
+            i.fval = f(i,goal_node)
+            open.append(i)
+        closed.append(current)
+        del open[0]
+
+        open.sort(key = lambda x:x.fval,reverse=False)
+
+def astarNode(node):
+    pass
+
+
 def main():
     menu()
     
@@ -224,4 +320,6 @@ def menu():
                       Please enter your choice: """)
     if choice == "A" or choice == "a":
         BFS()
+    if choice == "B" or choice == "b":
+        aStar()
 main()
